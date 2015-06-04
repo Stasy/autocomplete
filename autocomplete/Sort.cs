@@ -5,8 +5,11 @@ namespace autocomplete
 {
     public class Sort
     {
+        private const int maxWordLenght = 15;
+        private const int charackterLenght = 26;
+
         private int[] wordTracker { get; set; }
-        private int[] letterTracker { get; set; }
+        private int[,] letterTracker { get; set; }
         private char[] latinCharackter { get; set; }
 
         public void SortWordsDictionary(int wordsCount, Dictionary<string, int> wordsAndFrequency)
@@ -14,35 +17,36 @@ namespace autocomplete
             wordTracker = new int[wordsCount];
             letterTracker = SetDefaultLetterTracker();
             latinCharackter = SetLatinCharacter();
-            
-            for (var i = 0; i < wordsAndFrequency.Count; i++)
-            {
-                var currentWord = wordsAndFrequency.ElementAt(1).Key;
 
+            var i = 0;
+            foreach (var word in wordsAndFrequency)
+            {
                 for (var j = 0; j < latinCharackter.Length; j++)
                 {
-                    if (currentWord[0] == latinCharackter[j])
+                    if (word.Key[0] == latinCharackter[j])
                     {
-                        wordTracker[i] = letterTracker[j];
-                        letterTracker[j] = i;
+                        wordTracker[i] = letterTracker[0,j];
+                        letterTracker[0,j] = i;
                     }
                 }
+                i++;
             }
         }
 
-        private int[] SetDefaultLetterTracker()
+        private int[,] SetDefaultLetterTracker()
         {
-            letterTracker = new int[26];
+            letterTracker = new int[maxWordLenght, charackterLenght];
 
-            for (var i = 0; i < letterTracker.Length; i++)
-                letterTracker[i] = 0;
+            for (var i = 0; i < maxWordLenght; i++)
+                for (var j = 0; j < charackterLenght; j++)
+                    letterTracker[i,j] = 0;
 
             return letterTracker;
         }
 
         private char[] SetLatinCharacter()
         {
-            latinCharackter = new char[26];
+            latinCharackter = new char[charackterLenght];
 
             latinCharackter[0] = 'a';
             latinCharackter[1] = 'b';
