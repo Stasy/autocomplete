@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace autocomplete
@@ -26,23 +27,39 @@ namespace autocomplete
 
         private Dictionary<string, int> SortForCurrentDigit(Dictionary<string, int> wordsAndFrequency, int digit)
         {
+            Array.Clear(wordTracker, 0, wordTracker.Length);
+
             var i = 0;
             foreach (var word in wordsAndFrequency)
             {
-                for (var j = 0; j < latinCharackter.Length; j++)
+                if (word.Key.Length > digit)
                 {
-                    if (word.Key[digit] == latinCharackter[j])
+                    for (var j = 0; j < latinCharackter.Length; j++)
                     {
-                        wordTracker[i] = letterTracker[digit, j];
-                        letterTracker[digit, j] = i;
+                        if (word.Key[digit] == latinCharackter[j])
+                        {
+                            wordTracker[i] = letterTracker[digit, j];
+                            letterTracker[digit, j] = i;
+                        }
                     }
+                    i++;
                 }
-                i++;
             }
 
-            //здесь будет сортировка
+            //сортировка
+            var sortedDictionary = new Dictionary<string, int>();
 
-            return wordsAndFrequency;
+            for (var j = 0; j < latinCharackter.Length; j++)
+            {
+                var lastWordIndex = letterTracker[digit, j];
+
+                //взять по lastWordIndex индексу пару из wordsAndFrequency
+                //затем взять из wordTracker элемент с индексом lastWordIndex - это и будет индекс следующей пары
+                //затем взять из wordTracker элемент с индексом из предыдущей строки - содержимое и будет индексом слледующего слова
+                //обернуть это в рекурсию и продолжать пока содержимое wordTracker не будет = 0
+            }
+
+            return sortedDictionary;
         }
 
         private int[,] SetDefaultLetterTracker()
