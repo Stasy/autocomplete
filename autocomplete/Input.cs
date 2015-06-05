@@ -7,7 +7,7 @@ namespace autocomplete
     public class Input
     {
         public int WordsCount { get; private set; }
-        public Dictionary<string, Int32> WordsAndFrequency { get; private set; }
+        public Dictionary<string, Int32> WordsAndFrequency { get; set; }
         private int UnitsCount { get; set; }
         public string[] Units { get; private set; }
         private Func<string> readLine { get; set; }

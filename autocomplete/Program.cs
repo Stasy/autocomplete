@@ -13,7 +13,7 @@ namespace Autocomplete
 
             input.GetDataIn();
 
-            sort.SortWordsDictionary(input.WordsCount, input.WordsAndFrequency);
+            input.WordsAndFrequency = sort.SortWordsDictionary(input.WordsCount, input.WordsAndFrequency);
 
             foreach (var unit in input.Units)
             {

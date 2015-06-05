@@ -12,25 +12,37 @@ namespace autocomplete
         private int[,] letterTracker { get; set; }
         private char[] latinCharackter { get; set; }
 
-        public void SortWordsDictionary(int wordsCount, Dictionary<string, int> wordsAndFrequency)
+        public Dictionary<string, int> SortWordsDictionary(int wordsCount, Dictionary<string, int> wordsAndFrequency)
         {
             wordTracker = new int[wordsCount];
             letterTracker = SetDefaultLetterTracker();
             latinCharackter = SetLatinCharacter();
 
+            for (var i = 0; i < maxWordLenght; i++)
+                wordsAndFrequency = SortForCurrentDigit(wordsAndFrequency, i);
+
+            return wordsAndFrequency;
+        }
+
+        private Dictionary<string, int> SortForCurrentDigit(Dictionary<string, int> wordsAndFrequency, int digit)
+        {
             var i = 0;
             foreach (var word in wordsAndFrequency)
             {
                 for (var j = 0; j < latinCharackter.Length; j++)
                 {
-                    if (word.Key[0] == latinCharackter[j])
+                    if (word.Key[digit] == latinCharackter[j])
                     {
-                        wordTracker[i] = letterTracker[0,j];
-                        letterTracker[0,j] = i;
+                        wordTracker[i] = letterTracker[digit, j];
+                        letterTracker[digit, j] = i;
                     }
                 }
                 i++;
             }
+
+            //здесь будет сортировка
+
+            return wordsAndFrequency;
         }
 
         private int[,] SetDefaultLetterTracker()
