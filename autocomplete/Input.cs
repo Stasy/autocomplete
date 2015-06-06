@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 
 namespace autocomplete
@@ -7,7 +6,8 @@ namespace autocomplete
     public class Input
     {
         public int WordsCount { get; private set; }
-        public Dictionary<string, Int32> WordsAndFrequency { get; set; }
+        public string[] Words { get; set; }
+        public int[] Frequency { get; set; }
         private int UnitsCount { get; set; }
         public string[] Units { get; private set; }
         private Func<string> readLine { get; set; }
@@ -21,18 +21,20 @@ namespace autocomplete
                 var stream = new StreamReader(path);
                 readLine = stream.ReadLine;
             } else 
-                readLine = Console.ReadLine;            
-        }
+                readLine = Console.ReadLine;
 
-        public void GetDataIn(){
-            
+            //Считываем данные
             WordsCount = Convert.ToInt32(readLine());
 
-            WordsAndFrequency = new Dictionary<string, int>();
+            Words = new string[WordsCount];
+            Frequency = new int[WordsCount];
+
             for (var i = 0; i < WordsCount; i++)
             {
                 var parsedLine = readLine().Split(new[] { ' ' });
-                WordsAndFrequency.Add(parsedLine[0], Convert.ToInt32(parsedLine[1]));
+
+                Words[i] = parsedLine[0];
+                Frequency[i] = Convert.ToInt32(parsedLine[1]);
             }
 
             UnitsCount = Convert.ToInt32(readLine());

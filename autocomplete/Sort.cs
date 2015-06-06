@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace autocomplete
 {
     public class Sort
     {
+        private Input DataIn { get; set; }
+        
         private const int maxWordLenght = 15;
         private const int charackterLenght = 26;
 
@@ -13,36 +16,42 @@ namespace autocomplete
         private int[,] letterTracker { get; set; }
         private char[] latinCharackter { get; set; }
 
-        public Dictionary<string, int> SortWordsDictionary(int wordsCount, Dictionary<string, int> wordsAndFrequency)
+        public string[] sortedWords { get; private set; }
+        public int[] sortedFrequency { get; private set; }
+
+        public void SortWordsAndFrequency(Input dataIn)
         {
-            wordTracker = new int[wordsCount];
-            letterTracker = SetDefaultLetterTracker();
-            latinCharackter = SetLatinCharacter();
+            DataIn = dataIn;
+
+            wordTracker = new int[DataIn.WordsCount];
+            letterTracker = new int[maxWordLenght, charackterLenght];
+            latinCharackter = new char[charackterLenght];
+
+            SetDefaultLetterTracker();
+            SetLatinCharacter();
 
             for (var i = 0; i < maxWordLenght; i++)
-                wordsAndFrequency = SortForCurrentDigit(wordsAndFrequency, i);
-
-            return wordsAndFrequency;
+                SortForCurrentDigit(i);
         }
 
-        private Dictionary<string, int> SortForCurrentDigit(Dictionary<string, int> wordsAndFrequency, int digit)
+        private void SortForCurrentDigit(int digit)
         {
             Array.Clear(wordTracker, 0, wordTracker.Length);
 
-            var i = 0;
-            foreach (var word in wordsAndFrequency)
+            for(var i = 0; i < DataIn.WordsCount; i++)
             {
-                if (word.Key.Length > digit)
+                var word = DataIn.Words[i];
+
+                if (word.Length > digit)
                 {
                     for (var j = 0; j < latinCharackter.Length; j++)
                     {
-                        if (word.Key[digit] == latinCharackter[j])
+                        if (word[digit] == latinCharackter[j])
                         {
                             wordTracker[i] = letterTracker[digit, j];
                             letterTracker[digit, j] = i;
                         }
                     }
-                    i++;
                 }
             }
 
@@ -58,25 +67,17 @@ namespace autocomplete
                 //затем взять из wordTracker элемент с индексом из предыдущей строки - содержимое и будет индексом слледующего слова
                 //обернуть это в рекурсию и продолжать пока содержимое wordTracker не будет = 0
             }
-
-            return sortedDictionary;
         }
 
-        private int[,] SetDefaultLetterTracker()
+        private void SetDefaultLetterTracker()
         {
-            letterTracker = new int[maxWordLenght, charackterLenght];
-
             for (var i = 0; i < maxWordLenght; i++)
                 for (var j = 0; j < charackterLenght; j++)
                     letterTracker[i,j] = 0;
-
-            return letterTracker;
         }
 
-        private char[] SetLatinCharacter()
+        private void SetLatinCharacter()
         {
-            latinCharackter = new char[charackterLenght];
-
             latinCharackter[0] = 'a';
             latinCharackter[1] = 'b';
             latinCharackter[2] = 'c';
@@ -106,8 +107,6 @@ namespace autocomplete
             
             latinCharackter[24] = 'y';
             latinCharackter[25] = 'z';
-
-            return latinCharackter;
         }
     }
 }

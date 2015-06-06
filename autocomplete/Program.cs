@@ -11,13 +11,11 @@ namespace Autocomplete
             var sort = new Sort();
             var search = new Search();
 
-            input.GetDataIn();
-
-            input.WordsAndFrequency = sort.SortWordsDictionary(input.WordsCount, input.WordsAndFrequency);
+            sort.SortWordsAndFrequency(input);
 
             foreach (var unit in input.Units)
             {
-                var resultForCurrentUnit = search.TryFindWordsForUnit(input.WordsCount, input.WordsAndFrequency, unit);
+                var resultForCurrentUnit = search.TryFindWordsForUnit(unit);
 
                 if (resultForCurrentUnit.Length > 0)
                 {
