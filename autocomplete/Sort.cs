@@ -56,17 +56,37 @@ namespace autocomplete
             }
 
             //сортировка
-            var sortedDictionary = new Dictionary<string, int>();
+            sortedWords = new string[DataIn.WordsCount];
+            sortedFrequency = new int[DataIn.WordsCount];
+
+            var counter = 0;
 
             for (var j = 0; j < latinCharackter.Length; j++)
             {
                 var lastWordIndex = letterTracker[digit, j];
 
                 //взять по lastWordIndex индексу пару из wordsAndFrequency
+                sortedWords[counter] = DataIn.Words[lastWordIndex];
+                sortedFrequency[counter] = DataIn.Frequency[lastWordIndex];
+                counter++;
+
                 //затем взять из wordTracker элемент с индексом lastWordIndex - это и будет индекс следующей пары
                 //затем взять из wordTracker элемент с индексом из предыдущей строки - содержимое и будет индексом слледующего слова
                 //обернуть это в рекурсию и продолжать пока содержимое wordTracker не будет = 0
+
+                recursiya(lastWordIndex, counter);
             }
+        }
+
+        private void recursiya(int index, int counter)
+        {
+            var currentIndex = wordTracker[index];
+            sortedWords[counter] = DataIn.Words[currentIndex];
+            sortedFrequency[counter] = DataIn.Frequency[currentIndex];
+
+            counter++;
+            if (currentIndex != 0)
+                recursiya(currentIndex, counter);
         }
 
         private void SetDefaultLetterTracker()
