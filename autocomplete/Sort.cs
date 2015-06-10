@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+using System.Threading;
 
 namespace autocomplete
 {
@@ -31,7 +29,14 @@ namespace autocomplete
             SetLatinCharacter();
 
             for (var i = 0; i < maxWordLenght; i++)
-                SortForCurrentDigit(i);
+            {
+                int i1 = i;
+                var InstanceCaller = new Thread(
+                    () => SortForCurrentDigit(i1), 4194304);
+                InstanceCaller.Start();
+
+                //подумать, нужно ли останавливать поток
+            }
         }
 
         private void SortForCurrentDigit(int digit)
